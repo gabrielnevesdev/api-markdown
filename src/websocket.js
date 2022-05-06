@@ -23,17 +23,18 @@ io.on("connection", (socket) => {
     console.log("socket connected");
     socket.on("getDocument", async data=>{
         const document = await getMarkdown(data);
-        //console.log(document)
         socket.emit("document", document.data);
     })
     socket.on("markdown", data => {
         socket.broadcast.emit("markdown-content", data);
     })
-   socket.on("setDocument", async data => {
-       //console.log(data)
-        await setMarkdown(data.title, data.data);
-        socket.emit("save", "Saved");
-    })
+    setInterval(() => {
+        socket.emit("setDocument", "Saving...");
+            socket.on("document-save", async data => {
+                await setMarkdown(data.title, data.data);
+                socket.emit("save", "Saved Successfully");
+            })
+    }, 100000);
 }
 
 );
@@ -66,19 +67,11 @@ async function setMarkdown(title, data) {
 
         });
         await newMarkdown.save();
-        return newMarkdown;
     }
     else{
-        console.log(markdown.update)
-        const lastUpdate = moment(markdown.update, "HH:mm:ss");
-        const currentUpdate = moment(new Date()).format("HH:mm:ss");
-        const diff = moment().diff(lastUpdate, currentUpdate);
-        if(diff > 10) {
-            console.log('save')
+            console.log("salvando documento")
             markdown.data = data;
             markdown.update = moment(new Date()).format("HH:mm:ss");
             await markdown.save();
-            return markdown;
-        }
     }
 }
