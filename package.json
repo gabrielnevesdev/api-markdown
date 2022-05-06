@@ -1,0 +1,28 @@
+{
+  "name": "markdownapi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon ./src/server.js",
+    "build": "sucrase ./src -d ./dist --transforms imports"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "helmet": "^5.0.2",
+    "moment": "^2.29.1",
+    "mongodb": "^4.5.0",
+    "mongoose": "^6.3.2",
+    "socket.io": "^4.5.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.13",
+    "sucrase": "^3.20.2"
+  }
+}
