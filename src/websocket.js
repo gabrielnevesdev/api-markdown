@@ -21,20 +21,18 @@ const defaultValue = "## Markdown Editor\n\nThis is a markdown editor.\n\n* * *"
 
 io.on("connection", (socket) => {
     console.log("socket connected");
-    socket.on("getDocument", async data=>{
-        const document = await getMarkdown(data);
+    socket.on("getDocument", async documentTitle=>{
+        socket.join(documentTitle);
+        const document = await getMarkdown(documentTitle);
         socket.emit("document", document.data);
-    })
+        
     socket.on("markdown", data => {
-        socket.broadcast.emit("markdown-content", data);
+        socket.broadcast.to(documentTitle).emit("markdown-content", data);
     })
-    setInterval(() => {
-        socket.emit("setDocument", "Saving...");
-            socket.on("document-save", async data => {
-                await setMarkdown(data.title, data.data);
-                socket.emit("save", "Saved Successfully");
-            })
-    }, 100000);
+    });
+    socket.on("document-save", async data => {
+        await setMarkdown(data.title, data.data);
+    })            
 }
 
 );
@@ -69,7 +67,6 @@ async function setMarkdown(title, data) {
         await newMarkdown.save();
     }
     else{
-            console.log("salvando documento")
             markdown.data = data;
             markdown.update = moment(new Date()).format("HH:mm:ss");
             await markdown.save();
