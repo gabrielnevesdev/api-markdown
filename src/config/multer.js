@@ -22,12 +22,10 @@ const multerConfig = {
         fileSize: 2 * 1024 * 1024,
     },
     fileFilter: (req, file, cb)=> {
+        console.log(file)
         const allowedMimes = [
-            'image/jpeg',
-            'image/pjpeg',
-            'image/png',
-            'image/gif',
             'text/markdown',
+            'application/octet-stream',
         ];
         if(allowedMimes.includes(file.mimetype)){
             cb(null, true);
